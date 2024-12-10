@@ -66,7 +66,7 @@ class Vision():
 
         # 设置坐标轴的范围
         ax.set_xlim(0, total_time)
-        ax.set_ylim(0,7500)
+        ax.set_ylim(0,3500)
 
         # 设置坐标轴的标签
         ax.set_xlabel('Time (s)')

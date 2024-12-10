@@ -6,6 +6,10 @@ import numpy as np
 def brake(car):
     car.v_x = max(np.floor(car.v_x - car.v_x / 2),0)
     car.v_y = max(car.v_y - 22.5 / 20,0)
+
+def winer(per_step,tau,winer_pre):
+    return np.exp(- per_step / tau)*winer_pre+np.sqrt(2*per_step/tau)*np.random.normal(0,1)
+
     
 if __name__ == "__main__":
 
@@ -20,12 +24,17 @@ if __name__ == "__main__":
     carLength = 5  #设置车长为5米
 
     # IDM参数设置 
-    aMax = 8.5 #最大加速度
-    bMax = 8.5 #最大舒适减速度
+    aMax = 2.5 #最大加速度
+    bMax = 2.5 #最大舒适减速度
     S_0 = 10   #静止距离
     T = 2.5    #车头时距
     V_0 = 22.5 #期望速度(最大速度)
     V_max = 22.5
+
+    tau = 20
+    V_s = 0.01
+    S = 1
+    sigma_r = 0.05
     
     simulator = simulation()
     road = simulator.createRoad()
@@ -37,6 +46,8 @@ if __name__ == "__main__":
         if step % 4 == 0:
             car = simulator.createVehicle(vy=10) 
             road.append(car)
+        winer_s = [0]
+        winer_l = [0]
         # 自由加速
         for i,this_car in enumerate(road):
             # acceleration = ((np.random.rand() - 0.5)*2 /5)
@@ -51,10 +62,13 @@ if __name__ == "__main__":
                     isExecution = False
             if len(road)>1 and i > 0:
                 if road[i-1].loc_y - road[i].loc_y >= carLength:
-                    delta_distance = road[i-1].loc_y - road[i].loc_y - carLength
+                    delta_distance = (road[i-1].loc_y - road[i].loc_y - carLength)*np.exp(V_s*winer_s[-1])
+                    winer_s.append(winer(per_step=second_per_step,tau=tau,winer_pre=winer_s[-1]))
                 else:
                     delta_distance = 5
-                delta_velocity = road[i-1].v_y - road[i].v_y
+                road[i-1].v_y = road[i-1].v_y - S*sigma_r*winer_l[-1]
+                delta_velocity = (road[i-1].v_y - road[i].v_y) + S*sigma_r*winer_l[-1]
+                winer_l.append(winer(per_step=second_per_step,tau=tau,winer_pre=winer_l[-1]))
                 expect_distance = S_0 + max(0,road[i].v_y*T + road[i].v_y * delta_velocity/(2*np.sqrt(aMax*bMax)))
                 acceleration = aMax*(1-(road[i].v_y/V_0)**4-(expect_distance/delta_distance)**2)
                 # print(car.speeds)
