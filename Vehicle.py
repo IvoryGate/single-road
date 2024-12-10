@@ -1,14 +1,4 @@
-# single-road
-## 简介
-使用python编写的单车道IDM跟车模型仿真
-## 代码介绍
-```python
-    # main.py
-```
-
-```python
-    # Vehicle.py
-    import numpy as np
+import numpy as np
 class Car:
     def __init__(self, lx, ly, vx, vy, ax, ay, lane, current_speed,initial_headway,v_max=float('inf'),v_min=0): #这里包含“self”和等式右边的参数
         self.loc_x = lx
@@ -51,4 +41,4 @@ class Car:
         current_speed = self.get_current_speed()
         self.speeds.append((time, current_speed))
         # self.speed = current_speed  
-```
+    
