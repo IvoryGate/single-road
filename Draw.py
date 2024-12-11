@@ -3,6 +3,7 @@ import matplotlib
 from matplotlib.collections import LineCollection
 from matplotlib.colors import Normalize
 import numpy as np
+from rich import print as rprint
 
 class Vision():
     def __init__(self):
@@ -50,18 +51,14 @@ class Vision():
                 times = [t[0] for t in car.trajectory]
                 y_coords = [t[2] for t in car.trajectory]
                 speeds = [v[1] for v in car.speeds] # 获取记录的速度数据
-
+                # rprint(speeds)
+                # import ipdb;ipdb.set_trace()
                 # 绘制车辆轨迹，使用速度数据为轨迹着色
                 segments = np.array([(times[i], y_coords[i], times[i+1], y_coords[i+1]) for i in range(len(times)-1)]).reshape(-1, 2, 2)
                 lc = LineCollection(segments, cmap=cmap, norm=norm)
+                speeds = [(y_coords[i+1]-y_coords[i])/0.2 for i in range(len(times)-1)]
                 lc.set_array(speeds[:-1]) # 确保速度数组与线段数量匹配
                 lc.set_linewidth(2)
-                ax.add_collection(lc)
-
-                # 创建LineCollection对象
-                lc = LineCollection(segments, cmap=cmap, norm=norm)
-                lc.set_array(np.array(speeds))
-                lc.set_linewidth(2) # 设置线宽
                 ax.add_collection(lc)
 
         # 设置坐标轴的范围
