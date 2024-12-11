@@ -51,7 +51,7 @@ class Vision():
                 times = [t[0] for t in car.trajectory]
                 y_coords = [t[2] for t in car.trajectory]
                 speeds = [(y_coords[i+1]-y_coords[i])/0.2 for i in range(len(times)-1)]
-                # rprint(speeds)
+                # rprint([(times[i],speeds[i]) for i in range(len(times)-1)])
                 # import ipdb;ipdb.set_trace()
                 # 绘制车辆轨迹，使用速度数据为轨迹着色
                 segments = np.array([(times[i], y_coords[i], times[i+1], y_coords[i+1]) for i in range(len(times)-1)]).reshape(-1, 2, 2)

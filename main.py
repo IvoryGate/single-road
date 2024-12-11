@@ -1,7 +1,7 @@
 from Simulation import simulation
 from Draw import Vision
 import numpy as np
-
+from rich import print as rprint
 
 def brake(car):
     car.v_x = max(np.floor(car.v_x - car.v_x / 2),0)
@@ -19,13 +19,13 @@ if __name__ == "__main__":
     total_second = total_step*second_per_step
 
     # 车辆参数
-    brakeTime = 50
+    brakeTime = 30
     isExecution = True
     carLength = 5  #设置车长为5米
 
     # IDM参数设置 
     aMax = 2.5 #最大加速度
-    bMax = 2.5 #最大舒适减速度
+    bMax = 14.5 #最大舒适减速度
     S_0 = 10   #静止距离
     T = 2.5    #车头时距
     V_0 = 22.5 #期望速度(最大速度)
@@ -43,8 +43,8 @@ if __name__ == "__main__":
     # 主循环
     for step in range(total_step):
         # 来车
-        if step % 4 == 0:
-            car = simulator.createVehicle(vy=10) 
+        if step % 20 == 0:
+            car = simulator.createVehicle(vy=V_max) 
             road.append(car)
         winer_s = [0]
         winer_l = [0]
@@ -64,25 +64,29 @@ if __name__ == "__main__":
                 if road[i-1].loc_y - road[i].loc_y >= carLength:
                     delta_distance = (road[i-1].loc_y - road[i].loc_y - carLength)*np.exp(V_s*winer_s[-1])
                     winer_s.append(winer(per_step=second_per_step,tau=tau,winer_pre=winer_s[-1]))
-                else:
-                    delta_distance = 5
                 road[i-1].v_y = road[i-1].v_y - S*sigma_r*winer_l[-1]
                 delta_velocity = (road[i-1].v_y - road[i].v_y) + S*sigma_r*winer_l[-1]
                 winer_l.append(winer(per_step=second_per_step,tau=tau,winer_pre=winer_l[-1]))
                 expect_distance = S_0 + max(0,road[i].v_y*T + road[i].v_y * delta_velocity/(2*np.sqrt(aMax*bMax)))
                 acceleration = aMax*(1-(road[i].v_y/V_0)**4-(expect_distance/delta_distance)**2)
-                # print(car.speeds)
                 if np.isnan(acceleration):
                     acceleration = 0
+                elif acceleration >= 0:
+                    acceleration = min(aMax,acceleration)
+                elif acceleration < 0:
+                    acceleration = max(-bMax,acceleration)
 
-            if -bMax <= acceleration <= aMax:
-                this_car.update_v(time_step=second_per_step,a_y=acceleration)
-                this_car.update_loc(time_step=second_per_step)
-                this_car.update_trajectory(time=step*second_per_step)
-            
 
-    visible.visible_speed(main_road_vehicles=road[0:30],total_time=total_second)
-    visible.visible_1(main_road_vehicles=road[0:30],V_max=V_max,total_time=total_second)
+            # if -bMax <= acceleration <= aMax:
+            this_car.update_v(time_step=second_per_step,a_y=acceleration)
+            this_car.update_loc(time_step=second_per_step)
+            this_car.update_trajectory(time=step*second_per_step)
+    # for car in road:
+    #     rprint(car.trajectory)
+    #     import ipdb;ipdb.set_trace()
+
+    visible.visible_speed(main_road_vehicles=road,total_time=total_second)
+    visible.visible_1(main_road_vehicles=road,V_max=V_max,total_time=total_second)
             
 
         
