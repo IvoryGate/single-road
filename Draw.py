@@ -57,7 +57,7 @@ class Vision():
                 segments = np.array([(times[i], y_coords[i], times[i+1], y_coords[i+1]) for i in range(len(times)-1)]).reshape(-1, 2, 2)
                 lc = LineCollection(segments, cmap=cmap, norm=norm)
                 speeds = [(y_coords[i+1]-y_coords[i])/0.2 for i in range(len(times)-1)]
-                lc.set_array(speeds[:-1]) # 确保速度数组与线段数量匹配
+                lc.set_array(speeds) # 确保速度数组与线段数量匹配
                 lc.set_linewidth(2)
                 ax.add_collection(lc)
 
