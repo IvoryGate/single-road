@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # IDM参数设置 
     aMax = 2.5 #最大加速度
-    bMax = 14.5 #最大舒适减速度
+    bMax = 40.5 #最大舒适减速度
     S_0 = 10   #静止距离
     T = 2.5    #车头时距
     V_0 = 22.5 #期望速度(最大速度)
@@ -40,6 +40,8 @@ if __name__ == "__main__":
     road = simulator.createRoad()
     visible = Vision()
 
+    delta_velocity = 0
+    expect_distance = 0
     # 主循环
     for step in range(total_step):
         # 来车
@@ -75,15 +77,13 @@ if __name__ == "__main__":
                     acceleration = min(aMax,acceleration)
                 elif acceleration < 0:
                     acceleration = max(-bMax,acceleration)
-
+    
 
             # if -bMax <= acceleration <= aMax:
             this_car.update_v(time_step=second_per_step,a_y=acceleration)
             this_car.update_loc(time_step=second_per_step)
             this_car.update_trajectory(time=step*second_per_step)
-    # for car in road:
-    #     rprint(car.trajectory)
-    #     import ipdb;ipdb.set_trace()
+    import ipdb;ipdb.set_trace()
 
     visible.visible_speed(main_road_vehicles=road,total_time=total_second)
     visible.visible_1(main_road_vehicles=road,V_max=V_max,total_time=total_second)
