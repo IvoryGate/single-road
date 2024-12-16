@@ -73,17 +73,15 @@ class Vision():
         plt.colorbar(lc, ax=ax) # 显示颜色条
         plt.show()
 
-    def visible_2(self,main_road_vehicles):
+    def visible_2(self,mttc_values,drac_values):
         # 准备绘制趋势图之前
-        vehicle_ids = sorted(main_road_vehicles.keys())
-        mttc_values = [main_road_vehicles[v]['min_mttc'] for v in vehicle_ids]
-        drac_values = [main_road_vehicles[v]['min_drac'] for v in vehicle_ids]
+        vehicle_ids = range(0,len(mttc_values))
 
         # 绘制MTTC趋势图
         plt.figure(figsize=(14, 7))
 
         plt.subplot(1, 2, 1)
-        plt.scatter(vehicle_ids, mttc_values, marker='o', linestyle='-', color='b')
+        plt.scatter(vehicle_ids, mttc_values, marker='.', linestyle='-', color='b')
         plt.title('MTTC Trend by Vehicle ID')
         plt.xlabel('Vehicle ID')
         plt.ylabel('MTTC')
@@ -91,7 +89,7 @@ class Vision():
 
         # 绘制Drac趋势图
         plt.subplot(1, 2, 2)
-        plt.plot(vehicle_ids, drac_values, marker='o', linestyle='-', color='r')
+        plt.plot(vehicle_ids, drac_values, marker='.', linestyle='-', color='r')
         plt.title('Drac Trend by Vehicle ID')
         plt.xlabel('Vehicle ID')
         plt.ylabel('Drac')

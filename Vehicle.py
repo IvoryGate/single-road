@@ -16,7 +16,9 @@ class Car:
         self.trajectory = []  #用于储存每个时刻的位置
         self.current_speed = current_speed #用于计算当前车的速度
         self.initial_headway = initial_headway #开始时车的间距
-        self.a_y_pre = []       
+        self.a_y_pre = []
+        self.min_mttc = []
+        self.min_drac = []    
 
 
     def update_loc(self,time_step):  #函数里定义的都是形式参数，后边使用的时候需要传输
