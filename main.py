@@ -63,7 +63,7 @@ if __name__ == "__main__":
             # acceleration = ((np.random.rand() - 0.5)*2 /5)
             acceleration = 1
 
-            if i == 0 and this_car.loc_y >= 2000 and isExecution:
+            if i == 0 and this_car.loc_y >= 1500 and isExecution:
                 if brakeTime >= 0:
                     brake(this_car)
                     brakeTime = brakeTime - second_per_step
@@ -93,13 +93,12 @@ if __name__ == "__main__":
                     acceleration = min(aMax, acceleration)
                 elif acceleration < 0:
                     acceleration = max(-bMax, acceleration)
-
-                this_car.min_mttc.append(eval.calculate_mttc(
-                    delta_velocity, acceleration, delta_distance))
-                print(eval.calculate_mttc(
-                    delta_velocity, acceleration, delta_distance))
-                this_car.min_drac.append(eval.calculate_drac(
-                    delta_velocity, delta_distance))
+                # rprint("delta_v:",delta_velocity)
+                # rprint("delta_d",delta_distance)
+                this_car.min_mttc.append(np.abs(eval.calculate_mttc(
+                    delta_velocity, acceleration, delta_distance)))
+                this_car.min_drac.append(np.abs(eval.calculate_drac(
+                    delta_velocity, delta_distance)))
 
             # if -bMax <= acceleration <= aMax:
             this_car.update_v(time_step=second_per_step, a_y=acceleration)
@@ -111,11 +110,11 @@ if __name__ == "__main__":
             min_mttc.append(min(car.min_mttc))
             min_drac.append(min(car.min_drac))
 
-    print(len(min_mttc))
-    print(len(min_drac))
+    # print(len(min_mttc))
+    # print(len(min_drac))
 
-    rprint(min_mttc)
-    rprint(min_drac)
+    # rprint(min_mttc)
+    # rprint(min_drac)
 
     visible.visible_speed(main_road_vehicles=road, total_time=total_second)
     visible.visible_1(main_road_vehicles=road,

@@ -23,12 +23,29 @@ class evaluation:
         E_b_value = (1 / max_a) * integral_approximation
         return E_b_value
     
+    # # 计算mttc指标
+    # def calculate_mttc(self, delta_v, delta_a, Sn_distance):
+    #         return (delta_v + np.sqrt(delta_v**2 + 2 * delta_a * Sn_distance)) / delta_a
+
+    # # 计算drac指标
+    # def calculate_drac(self, delta_v, Sn_distance):
+    #         return (delta_v**2) / Sn_distance
     # 计算mttc指标
     def calculate_mttc(self, delta_v, delta_a, Sn_distance):
-            return (delta_v + np.sqrt(delta_v**2 + 2 * delta_a * Sn_distance)) / delta_a
+        if delta_a != 0:
+            result = (delta_v + np.sqrt(delta_v**2 + 2 * delta_a * Sn_distance)) / delta_a
+            if np.isnan(result):
+                return float('inf')
+            else:
+                return result
+        else:
+            return float('inf')
 
     # 计算drac指标
     def calculate_drac(self, delta_v, Sn_distance):
+        if Sn_distance != 0:
             return (delta_v**2) / Sn_distance
+        else:
+            return float('inf')
         
 
